@@ -1,7 +1,8 @@
 import cv2
+import numpy as np
 
 
-cap = cv2.VideoCapture("videos/video_1.mp4")
+cap = cv2.VideoCapture("videos/video_4.MOV")
 if not cap.isOpened():
     print("Error video not opeened")
     exit()
@@ -41,7 +42,8 @@ while cap.isOpened():
     key = cv2.waitKey(time_frame) & 0xFF  # Получаем нажатую клавишу
     if key == 27:  # Если нажата ESC (код 27)
         break  # Выходим из цикла
-cv2.imwrite("images/best_frame.png", best_frame)
-print(F"{best_frame_number}    {best_sharpness}")
-cap.release()
+cv2.imwrite("images/best_frame4.png", best_frame)
+
+
+cv2.waitKey(0)
 cv2.destroyAllWindows()
