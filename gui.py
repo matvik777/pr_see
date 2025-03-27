@@ -2,7 +2,8 @@ import sys
 import cv2
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel,
-    QVBoxLayout, QHBoxLayout, QSlider, QScrollArea
+    QVBoxLayout, QHBoxLayout, QSlider, QScrollArea,
+    QSizePolicy
 )
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap, QImage
@@ -13,17 +14,22 @@ class MainWindow(QWidget):
         super().__init__()
         
         self.setWindowTitle("Webcam") 
-        self.resize(1000,700)
+        self.resize(1300,900)
         
         
         self.label_info = QLabel("Информация о камере/кадре отобразится здесь.")
         
         self.label_video = QLabel("Video not faund")
-        self.label_video.setMinimumSize(320, 240)
+        self.label_video.setMinimumSize(1280, 720)
+       # Масштабировать изображение внутри QLabel
+
         self.label_video.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidget(self.label_video)
+      
+        self.scroll_area.setMinimumSize(1280, 720)  # Минимальный размер, который ты хочешь
+        self.scroll_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # Позволяет растягиваться        
         self.label_zoom_value = QLabel("Zomm: 100%")
         
         self.slider_zoom = QSlider(Qt.Orientation.Horizontal)
@@ -42,16 +48,19 @@ class MainWindow(QWidget):
         button_layout.addWidget(self.slider_zoom)
         
         main_layout = QVBoxLayout()
+        
         main_layout.addLayout(top_layout)
-
-        main_layout.addWidget(self.scroll_area)
- 
+        main_layout.addStretch(1)
+        main_layout.addWidget(self.scroll_area,  alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addStretch(1)
         main_layout.addLayout(button_layout)
 
         self.setLayout(main_layout)
 
         
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # Новая ширина
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         if not self.cap.isOpened:
             self.label_info.setText("Не удалось открыть видео")
             return
